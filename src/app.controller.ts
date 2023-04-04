@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Param } from '@nestjs/common';
+import { Controller, Delete, Get, Post, Param } from '@nestjs/common';
 import { AppService } from './app.service';
 import { CreateUserDto } from './create-user.dto';
 //import axios from 'axios';
@@ -13,6 +13,11 @@ export class AppController {
   getHello(): string {
     return this.appService.getHello();
   }*/
+
+  @Delete(':id/avatar')
+  async deleteUserAvatar(@Param('id') id: string) {
+    return this.appService.deleteUserAvatar(id);
+  }
 
   @Get()
   async getAllUsers() {

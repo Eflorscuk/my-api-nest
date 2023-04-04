@@ -12,7 +12,7 @@ import * as crypto from 'crypto';
 import * as fs from 'fs';
 import * as path from 'path';
 import { UserAvatarModel } from './user-avatar.schema';
-import { User } from './user.schema';
+//import { User } from './user.schema';
 
 const url = 'https://reqres.in/api/users';
 @Injectable()
@@ -45,6 +45,28 @@ export class AppService {
     await connection.close();
 
     return { message: 'User created successfully' };
+  }
+  async deleteUserAvatar(@Param('id') id: string) {
+    const userAvatar = await axios.get(`${url}/${id}`);
+
+    if (!userAvatar) {
+      throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);
+    }
+
+    const hashedUserId = crypto.createHash('md5').update(id).digest('hex');
+    const imagePath = path.join(__dirname, '..', 'avatars', `${hashedUserId}`);
+
+    try {
+      fs.unlinkSync(imagePath);
+    } catch (error) {
+      console.error(`Error deleting file: ${error}`);
+      throw new HttpException(
+        'Internal server error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+
+    return { message: 'User avatar deleted sucessfully ' };
   }
   async getAllUsers() {
     try {
