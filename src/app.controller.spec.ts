@@ -2,7 +2,13 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import * as request from 'supertest';
-import { HttpStatus } from '@nestjs/common';
+import { CreateUserDto } from './create-user.dto';
+import { HttpException, HttpStatus } from '@nestjs/common';
+import axios from 'axios';
+import { AxiosStatic } from 'axios';
+import MockProxy from 'ts-jest';
+
+jest.mock('axios');
 
 describe('AppController', () => {
   let appController: AppController;
