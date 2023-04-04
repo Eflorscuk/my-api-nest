@@ -11,7 +11,8 @@ import * as amqp from 'amqplib';
 import * as crypto from 'crypto';
 import * as fs from 'fs';
 import * as path from 'path';
-
+import { UserAvatarModel } from './user-avatar.schema';
+import { User } from './user.schema';
 
 const url = 'https://reqres.in/api/users';
 @Injectable()
@@ -64,7 +65,39 @@ export class AppService {
   }
   async getUserAvatar(@Param('id') id: string) {
     try {
-      co
+      const config = {
+        timeout: 10000,
+      };
+      const userIdAvatar = await axios.get(`${url}/${id}`, config);
+      const response = userIdAvatar.data.data;
+
+      if (!response) {
+        throw new HttpException('Users not found', HttpStatus.NOT_FOUND);
+      }
+
+      const { avatar } = response;
+
+      if (!avatar) {
+        throw new HttpException('Users not found', HttpStatus.NOT_FOUND);
+      }
+
+      const hashedUserId = crypto.createHash('md5').update(id).digest('hex');
+      const imagePath = path.join(
+        __dirname,
+        '..',
+        'avatars',
+        `${hashedUserId}`,
+      );
+      const image = await axios.get(avatar, { responseType: 'arraybuffer' });
+      fs.writeFileSync(imagePath, image.data);
+
+      const newUserAvatar = new UserAvatarModel({
+        userId: id,
+        image,
+      });
+
+      await newUserAvatar.save();
+      return { avatar: image.data.toString('base64') };
     } catch (error) {
       throw new HttpException('Request timed out', HttpStatus.REQUEST_TIMEOUT);
     }

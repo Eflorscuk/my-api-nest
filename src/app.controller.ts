@@ -30,7 +30,7 @@ export class AppController {
   }
 
   @Get(':id/avatar')
-  async getUserAvatar(@Param('id') id: string){
-    
+  async getUserAvatar(@Param('id') id: string) {
+    return this.appService.getUserAvatar(id);
   }
 }
