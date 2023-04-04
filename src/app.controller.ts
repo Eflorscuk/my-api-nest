@@ -28,4 +28,9 @@ export class AppController {
   async createNewUser(createUserDto: CreateUserDto) {
     return this.appService.createNewUser(createUserDto);
   }
+
+  @Get(':id/avatar')
+  async getUserAvatar(@Param('id') id: string){
+    
+  }
 }

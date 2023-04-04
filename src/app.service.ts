@@ -8,6 +8,10 @@ import {
 import axios from 'axios';
 import { CreateUserDto } from './create-user.dto';
 import * as amqp from 'amqplib';
+import * as crypto from 'crypto';
+import * as fs from 'fs';
+import * as path from 'path';
+
 
 const url = 'https://reqres.in/api/users';
 @Injectable()
@@ -54,6 +58,13 @@ export class AppService {
       }
 
       return response;
+    } catch (error) {
+      throw new HttpException('Request timed out', HttpStatus.REQUEST_TIMEOUT);
+    }
+  }
+  async getUserAvatar(@Param('id') id: string) {
+    try {
+      co
     } catch (error) {
       throw new HttpException('Request timed out', HttpStatus.REQUEST_TIMEOUT);
     }
